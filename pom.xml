@@ -16,26 +16,45 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.mashape.unirest</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>1.4.9</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.jr</groupId>
             <artifactId>jackson-jr-objects</artifactId>
             <version>2.9.9</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <!--testing dependencies-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.27.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.23.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- I've moved these things to the test side because GraalVM can't cope with them -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.8</version>
+            <scope>test</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 

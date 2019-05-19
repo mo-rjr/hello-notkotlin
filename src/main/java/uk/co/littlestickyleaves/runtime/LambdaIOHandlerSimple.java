@@ -113,7 +113,7 @@ public class LambdaIOHandlerSimple implements LambdaIOHandler {
     public void returnLambdaError(String awsRequestId, LambdaDataProcessingException lambdaException) {
 
         try {
-            URL outputUrl = new URL(runtimeApiRoot + INVOCATION + awsRequestId + RESPONSE);
+            URL outputUrl = new URL(runtimeApiRoot + INVOCATION + awsRequestId + ERROR);
             byte[] payload = JsonExceptionShape.exceptionAsJson(lambdaException).getBytes(StandardCharsets.UTF_8);
             HttpURLConnection httpURLConnection = setUpPost(outputUrl, payload, true);
 

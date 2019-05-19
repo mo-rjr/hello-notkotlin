@@ -5,11 +5,10 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 /**
+ * GraalVM only goes up to Java 8, so this is stored in the test directory out of the way
+ * 
  * This class deals with getting Lambda input and output from the API.
  * It deals with String payloads and does not care about their meaning.
  * It has four options:

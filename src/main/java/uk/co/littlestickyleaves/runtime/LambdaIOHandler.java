@@ -7,7 +7,7 @@ public interface LambdaIOHandler {
 
     void returnLambdaOutput(String awsRequestId, String result) throws LambdaIOException;
 
-    void returnLambdaError(String awsRequestId, LambdaDataProcessingException ldpe);
+    void returnLambdaError(String awsRequestId, LambdaDataProcessingException exception);
 
-    void returnInitializationError(LambdaIOException lioe);
+    void returnInitializationError(LambdaIOException exception);
 }

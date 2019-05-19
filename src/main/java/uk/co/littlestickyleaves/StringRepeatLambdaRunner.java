@@ -29,6 +29,7 @@ public class StringRepeatLambdaRunner {
         while (true) {
 
             try {
+                // poll
                 lambdaInputWithId = lambdaIOHandler.getLambdaInput();
 
                 // process
