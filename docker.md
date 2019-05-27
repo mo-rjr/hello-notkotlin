@@ -8,7 +8,7 @@ If you build the Docker file, it's best to give it a tag, e.g. \
 `docker build -t hello-notkotlin .`
 
 Then this command will give you the id of the container: \
-`docker run -d --name try hello-notkotlin`
+`docker run -d --name try hello-notkotlin` \
 and also give it the name `try`.
 
 Then you can run this command, where the long number is the id of the container: \

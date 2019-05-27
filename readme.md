@@ -18,19 +18,19 @@ The Dockerfile ended up being a bit of a dead end because of my own dev environm
 
 ## The Java code
 The Java code is run from `uk.co.littlestickyleaves.StringRepeatLambdaRunner`.  It fulfils the API contract by polling for input text, processing it, and posting back the result. 
-It also catches and handles the two types of error: initialization errors, and processing errors. 
-The Java code is not intended as a layer which can be used to as a base for different lambdas, so it does not use reflection to create a Handler. 
+It also catches and handles the two types of error: initialization errors, and processing errors.  \
+The Java code is not intended as a general-purpose layer which can be used as a base for different lambdas, so it does not use reflection to create a Handler. 
 The StringRepeater class which processes the input is also responsible for deserializing the Json. I've used the most lightweight version of Jackson.
 
 I had a bit of trouble implementing the GETs and POSTs required by the API.  At first I didn't realise that GraalVM only goes up to Java 8, and tried to use the Java 11 HttpClient.
-Then I tried to use Unirest, but something, possible static initializers, annoyed GraalVM.  The Kotlin demo says that OkHttp isn't liked either. 
-I started using Apache, but by this point I was so bored with writing HTTP code that I just used
+Then I tried to use Unirest, but something, possibly static initializers, annoyed GraalVM.  The Kotlin demo says that OkHttp isn't liked either. 
+I started using Apache, but I worried it would have issues too, and by this point I was so bored with writing HTTP code that I just used
 `java.net.HttpURLConnection` from Java 1.1 -- old school.  The required methods are defined in the `LambdaIOHandler` interface 
 so it should be easy to swap in a better one.  (I think GraalVM can handle static stuff if warned about it, but I couldn't be bothered for this.)
 
 ## My dev context
 My home machine is on Windows 10 Pro.  My work machine is too. 
-I needed to use my home machine for this because I have more control over it.  For example, I required a recent version of Maven. 
+I needed to use my home machine for this because I have more control over it: for example, I required a recent version of Maven. 
 I have the Windows Subsystem for Linux on my home machine, but I usually develop in Windows on IntelliJ. 
 I can run Docker from Windows, but not from WSL Ubuntu as yet.  But things like setting files to be executable required that I do some work at least from a Linux environment. \
 At first I was doing quite well building using a Dockerfile in Windows, but the function didn't work, I think because it wasn't properly executable. \
@@ -38,7 +38,7 @@ In the end I used the WSL to make it work.  This means that a lot of my trouble 
 In particular there was some fiddly stuff about windows vs linux PATH variables.  Luckily Ubuntu is pretty good at installing things for you.
 
 Thing I had to have on WSL Ubuntu:
-* java 8, jdk not just jre (try `whereis javac` and it will help you out with an instruction to get the jdk)
+* java 8 not 11, jdk not just jre
 * JAVA_HOME variable
 * mvn
 * aws cli
@@ -48,6 +48,7 @@ Thing I had to have on WSL Ubuntu:
 * native-image -- you get this using GraalVM's gu tool: `gu install native-image`
 * adding things to my `~/.bashrc` seemed to be the best way to deal with having persistent PATH variables, and if 
 I added them to the front of the PATH it didn't matter if Windows variants of the same thing were found further down the list
+(when stuff like java was only available in a Windows .exe form on the path I got confusing error messages)
 * I needed some cpp header stuff to be available
     * online it suggested `sudo apt-get install build-essential` but I already seemed to have that
     * `sudo apt-get install zlib1g-dev` sorted me out
@@ -82,7 +83,8 @@ For example, make sure you've got the cpp header stuff available (see the list o
 Make the executable executable (chmod etc).
 
 Place the bootstrap file and the executable into a zip file together: \
-`zip string-repeater.zip bootstrap notkotlin`
+`zip string-repeater.zip bootstrap notkotlin`  
+This is your deployment package!
 
 ## Making a function on AWS using the deployment package
 Obviously you now need the aws cli.  If you haven't already configured it, here are some easy instructions: \
@@ -99,9 +101,10 @@ If this is not your first attempt you'll need to delete the previous version: \
 You should get back some info about the created function. 
 
 Now you can try to invoke the function on AWS like this: \
-`aws lambda invoke --function-name repeat-string --payload '{"input":"beep", "repeat": 4}' response.txt`\
+`aws lambda invoke --function-name repeat-string --payload '{"input":"beep","repeat":4}' response.txt`\
+(Don't put any spaces into your json payload.)
 The response to the cli command should give you some idea if it has worked or not. 
-It will have put the proper response into `response.txt`, and this will either be more detail on the error, or the correct output. 
+It will have put the proper response into `response.txt`, and this will either be more detail on the error, or the correct output.   
 Here is a response.txt contents from a successful invocation: \
 `{"input":"neenah","repeat":9,"result":"neenahneenahneenahneenahneenahneenahneenahneenahneenah"}` \
 If it has failed, more detail can be got from looking at the CloudWatch logs in the AWS console.  The error message may be somewhat opaque.
